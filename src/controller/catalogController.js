@@ -10,8 +10,9 @@ export const getCatalog = async (req, res) => {
 }
 
 export const getGame = async (req, res) => {
-    const game = req.params.search.split("_").join(" ");
-    console.log(game)
+    const game = req.params.search
+        .split("_")
+        .join(" ");
     try {
         await db.collection("catalog").createIndex({
             name: "text"
