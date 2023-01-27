@@ -1,10 +1,24 @@
 import db from "../config/database.js";
 import { ObjectId } from "mongodb";
 
+export const getCart = async (req, res) => {
+    const userId = res.locals.userId;
+
+    try {
+        const cart = await db.collection("cart").findOne({ userId: userId });
+
+        if (!cart) return res.status(400).send("Contact support!");
+
+        return res.send(cart.cart);
+    } catch (error) {
+        return res.status(500).send(err.message);
+    }
+}
+
 export const addToCart = async (req, res) => {
     const { gameId } = req.body;
     const userId = res.locals.userId;
-
+    console.log(gameId)
     try {
         const game = await db.collection("catalog").findOne({ _id: ObjectId(gameId) });
 
@@ -16,12 +30,16 @@ export const addToCart = async (req, res) => {
 
         if (!cart) return res.status(400).send("User cart not found. contact the support.");
 
-        const cartGame = await db.collection("cart").findOne({
-            _id: userId,
-            cart: { $elemMatch: { _id: gameId } }
-        })
+        const cartGame = await db.collection("cart").findOne(
+            {
+                userId: userId,
+                cart: { $elemMatch: { _id: ObjectId(gameId) } }
+            }
+        );
 
-        if (!cartGame) return res.status(400).send("The game is already in the cart.");
+        console.log(cartGame)
+
+        if (cartGame) return res.status(400).send("The game is already in the cart.");
 
         await db.collection("cart").updateOne(
             {
