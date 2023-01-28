@@ -2,6 +2,20 @@ import bcrypt, { compareSync } from "bcrypt";
 import { v4 as uuid } from "uuid";
 import db from "../config/database.js";
 
+export const autoSignIn = async (req, res) => {
+
+  const userId = res.locals.userId;
+
+  try {
+      const token = await db.collection("sessions").findOne({ userId });
+      return token ?
+          res.status(202).send(token.token) :
+          res.sendStatus(401);
+  } catch (error) {
+      return res.sendStatus(500);
+  }
+};
+
 export async function signUp(req, res) {
   const user = req.body;
 

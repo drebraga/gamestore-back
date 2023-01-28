@@ -18,7 +18,8 @@ export const getCart = async (_, res) => {
 export const addToCart = async (req, res) => {
     const { gameId } = req.body;
     const userId = res.locals.userId;
-    console.log(gameId)
+
+
     try {
         const game = await db.collection("catalog").findOne({ _id: ObjectId(gameId) });
 
@@ -37,8 +38,6 @@ export const addToCart = async (req, res) => {
             }
         );
 
-        console.log(cartGame)
-
         if (cartGame) return res.status(400).send("The game is already in the cart.");
 
         await db.collection("cart").updateOne(
@@ -49,6 +48,7 @@ export const addToCart = async (req, res) => {
                 $push: {
                     cart: {
                         $each: [{
+                            type: game.type,
                             image: game.image,
                             name: game.name,
                             price: game.price,
