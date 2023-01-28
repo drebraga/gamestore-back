@@ -5,7 +5,6 @@ import catalogRouter from "./routes/catalogRoutes.js"
 import authRouter from "./routes/authRoutes.js";
 import cartRouter from "./routes/cartRoutes.js";
 
-
 dotenv.config();
 
 const app = express();
