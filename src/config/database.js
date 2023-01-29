@@ -12,7 +12,7 @@ let db;
 
 try {
     await mongoClient.connect();
-    db = mongoClient.db();
+    db = mongoClient.db("gamestore");
 } catch (err) {
     console.log(err);
 }
