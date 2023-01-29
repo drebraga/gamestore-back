@@ -4,15 +4,18 @@ import db from "../config/database.js";
 
 export const autoSignIn = async (req, res) => {
 
-  const userId = res.locals.userId;
+  const id = res.locals.userId;
 
   try {
-      const token = await db.collection("sessions").findOne({ userId });
-      return token ?
-          res.status(202).send(token.token) :
-          res.sendStatus(401);
+    const { token, userId } = await db.collection("sessions").findOne({ userId: id });
+    const { name } = await db.collection("users").findOne({ _id: userId })
+    const response = { token: token, name: name };
+
+    return token ?
+      res.status(202).send(response) :
+      res.sendStatus(401);
   } catch (error) {
-      return res.sendStatus(500);
+    return res.status(500).send(error.message);
   }
 };
 
@@ -53,7 +56,7 @@ export async function signIn(req, res) {
         userId: user._id,
         token
       })
-      res.status(201).send({ token })
+      res.status(201).send({ token, name: user.name })
     } else {
       return res.status(400).send({ message: "email or password is invalid!" })
     }
