@@ -1,7 +1,7 @@
 import db from "../config/database.js";
 import { ObjectId } from "mongodb";
 
-export const getCart = async (req, res) => {
+export const getCart = async (_, res) => {
     const userId = res.locals.userId;
 
     try {
@@ -18,7 +18,6 @@ export const getCart = async (req, res) => {
 export const addToCart = async (req, res) => {
     const { gameId } = req.body;
     const userId = res.locals.userId;
-
 
     try {
         const game = await db.collection("catalog").findOne({ _id: ObjectId(gameId) });
@@ -62,6 +61,60 @@ export const addToCart = async (req, res) => {
         );
 
         return res.status(201).send("Adicionado")
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+}
+
+export const updateCart = async (req, res) => {
+    const { updatedCart } = req.body;
+    console.log(updatedCart);
+    const userId = res.locals.userId;
+    console.log(userId);
+    
+    try {        
+        const cart = await db.collection("cart").findOne({
+            userId: ObjectId(userId)
+        })
+
+        if (!cart) return res.status(400).send("User cart not found. contact the support.");
+
+        await db.collection("cart").updateOne(
+            {
+                userId: ObjectId(userId)
+            },
+            {
+                $set: {cart: updatedCart}
+            }            
+        );
+
+        return res.status(201).send("Cart content successfully updated")
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+}
+
+export const cleanCart = async (_, res) => {
+    const userId = res.locals.userId;
+
+    try {
+
+        const cart = await db.collection("cart").findOne({
+            userId: ObjectId(userId)
+        })
+
+        if (!cart) return res.status(400).send("User cart not found. contact the support.");
+
+        await db.collection("cart").updateOne(
+            {
+                userId: ObjectId(userId)
+            },
+            {
+                $set: {cart: []}
+            }
+                     
+        );
+        return res.status(200).send("Cart content successfully deleted");
     } catch (err) {
         return res.status(500).send(err.message);
     }
