@@ -10,6 +10,6 @@ const cartRouter = Router();
 cartRouter.get("/cart", tokenValidation(), getCart);
 cartRouter.post("/cart", tokenValidation(), schemaValidation(gameIdSchema), addToCart);
 cartRouter.put("/update-cart", tokenValidation(), updateCart); 
-cartRouter.put("/clear-cart", tokenValidation(), cleanCart);
+cartRouter.delete("/clean-cart", tokenValidation(), cleanCart);
 
 export default cartRouter;

@@ -19,7 +19,6 @@ export const addToCart = async (req, res) => {
     const { gameId } = req.body;
     const userId = res.locals.userId;
 
-
     try {
         const game = await db.collection("catalog").findOne({ _id: ObjectId(gameId) });
 
@@ -69,7 +68,9 @@ export const addToCart = async (req, res) => {
 
 export const updateCart = async (req, res) => {
     const { updatedCart } = req.body;
+    console.log(updatedCart);
     const userId = res.locals.userId;
+    console.log(userId);
     
     try {        
         const cart = await db.collection("cart").findOne({
