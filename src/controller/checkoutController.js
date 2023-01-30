@@ -17,9 +17,9 @@ export const getHistory = async (_, res) => {
 
 export const addToHistory = async (req, res) => {
     const { updatedCart } = req.body;
-    console.log(updatedCart);
+
     const userId = res.locals.userId;
-    console.log(userId);
+
     
     try {        
         const history = await db.collection("checkout").findOne({
